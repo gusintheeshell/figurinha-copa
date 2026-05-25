@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html,
+  body {
+    @apply bg-gruvbox-bg text-gruvbox-fg antialiased;
+    min-height: 100%;
+    min-height: 100dvh;
+  }
+
+  body {
+    overscroll-behavior-y: contain;
+    padding-top: env(safe-area-inset-top);
+  }
+
+  * {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+  }
+
+  button,
+  [role='button'] {
+    touch-action: manipulation;
+  }
+}
