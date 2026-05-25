@@ -1,0 +1,1 @@
+export { StickerTile } from './StickerTile'

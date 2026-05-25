@@ -1,0 +1,1 @@
+export { StickerHeader } from './StickerHeader'
