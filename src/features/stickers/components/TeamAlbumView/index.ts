@@ -1,0 +1,1 @@
+export { TeamAlbumView } from './TeamAlbumView'
