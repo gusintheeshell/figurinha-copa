@@ -12,7 +12,9 @@ export interface Team {
   stickers: Sticker[]
 }
 
-export type StickerFilter = 'all' | 'missing' | 'duplicates'
+export type StickerFilter = 'all' | 'missing' | 'duplicates' | 'trade'
+
+export type StickerSort = 'album' | 'number'
 
 export interface StickerStats {
   total: number
