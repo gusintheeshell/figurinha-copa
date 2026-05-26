@@ -16,7 +16,7 @@ export function Accordion({
   children,
 }: AccordionProps) {
   return (
-    <section className="overflow-hidden rounded-2xl border border-gruvbox-bg2 bg-gruvbox-bg1">
+    <section className="overflow-hidden rounded-2xl border border-gruvbox-bg2 bg-gruvbox-bg1 transition-shadow duration-300">
       <button
         type="button"
         onClick={onToggle}
@@ -33,13 +33,23 @@ export function Accordion({
         </div>
         <span
           aria-hidden
-          className={`text-gruvbox-yellow transition-transform ${open ? 'rotate-180' : ''}`}
+          className={`text-gruvbox-yellow transition-transform duration-300 ease-out ${
+            open ? 'rotate-180' : 'rotate-0'
+          }`}
         >
           ▾
         </span>
       </button>
 
-      {open ? <div className="border-t border-gruvbox-bg2 px-3 pb-3 pt-2">{children}</div> : null}
+      <div
+        className={`grid transition-[grid-template-rows,opacity] duration-300 ease-out ${
+          open ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
+        }`}
+      >
+        <div className="overflow-hidden">
+          <div className="border-t border-gruvbox-bg2 px-3 pb-3 pt-2">{children}</div>
+        </div>
+      </div>
     </section>
   )
 }
