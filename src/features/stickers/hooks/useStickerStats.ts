@@ -28,13 +28,17 @@ export function useStickerStats(teams: Team[]) {
 
 export function filterStickers(
   stickers: Sticker[],
-  filter: 'all' | 'missing' | 'duplicates',
+  filter: 'all' | 'missing' | 'duplicates' | 'trade',
 ): Sticker[] {
   switch (filter) {
     case 'missing':
       return stickers.filter((sticker) => sticker.quantity === 0)
     case 'duplicates':
       return stickers.filter((sticker) => sticker.quantity > 1)
+    case 'trade':
+      return stickers.filter(
+        (sticker) => sticker.quantity === 0 || sticker.quantity > 1,
+      )
     default:
       return stickers
   }
