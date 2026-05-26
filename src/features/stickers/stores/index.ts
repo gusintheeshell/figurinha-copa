@@ -1,1 +1,1 @@
-export { useStickersStore, selectFilter, selectTeams } from './stickersStore'
+export { isTeamExpanded, selectFilter, selectTeams, useStickersStore } from './stickersStore'
