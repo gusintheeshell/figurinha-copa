@@ -2,6 +2,7 @@ import { filterStickers } from '../../hooks'
 import { useTranslation } from '@/lib/i18n'
 import { useStickersStore } from '../../stores'
 import type { Team } from '../../types'
+import { sortStickers } from '../../utils/sortStickers'
 import { StickerTile } from '../StickerTile'
 
 interface StickerGridProps {
@@ -11,12 +12,27 @@ interface StickerGridProps {
 export function StickerGrid({ team }: StickerGridProps) {
   const { t } = useTranslation()
   const filter = useStickersStore((state) => state.filter)
-  const visibleStickers = filterStickers(team.stickers, filter)
+  const sort = useStickersStore((state) => state.sort)
+  const tradeMode = useStickersStore((state) => state.tradeMode)
+  const focusedSticker = useStickersStore((state) => state.focusedSticker)
+  const effectiveFilter = tradeMode ? 'trade' : filter
+
+  let visibleStickers = filterStickers(team.stickers, effectiveFilter)
+
+  if (focusedSticker?.teamId === team.id) {
+    const focused = team.stickers.find((sticker) => sticker.id === focusedSticker.stickerId)
+
+    if (focused && !visibleStickers.some((sticker) => sticker.id === focused.id)) {
+      visibleStickers = [...visibleStickers, focused]
+    }
+  }
+
+  visibleStickers = sortStickers(visibleStickers, sort)
 
   if (visibleStickers.length === 0) {
     return (
       <p className="py-6 text-center text-sm text-gruvbox-fgMuted">
-        {t('grid.empty')}
+        {tradeMode ? t('grid.emptyTrade') : t('grid.empty')}
       </p>
     )
   }
