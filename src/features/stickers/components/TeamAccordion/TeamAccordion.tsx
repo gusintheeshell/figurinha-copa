@@ -1,8 +1,8 @@
-import { useState } from 'react'
 import { Accordion, ProgressBar } from '@/components/Elements'
 import { useTeamTranslation } from '@/lib/i18n'
 import { getTeamFlag } from '../../data/teamFlags'
 import { useStickerStats } from '../../hooks'
+import { isTeamExpanded, useStickersStore } from '../../stores'
 import type { Team } from '../../types'
 import { StickerGrid } from '../StickerGrid'
 
@@ -11,16 +11,18 @@ interface TeamAccordionProps {
 }
 
 export function TeamAccordion({ team }: TeamAccordionProps) {
-  const [open, setOpen] = useState(true)
+  const expandedTeams = useStickersStore((state) => state.expandedTeams)
+  const toggleTeamAccordion = useStickersStore((state) => state.toggleTeamAccordion)
   const { byTeam } = useStickerStats([team])
   const stats = byTeam[team.id]
   const { name, group, t } = useTeamTranslation(team.id, team.groupKey)
   const flag = getTeamFlag(team.id)
+  const isOpen = isTeamExpanded(expandedTeams, team.id)
 
   return (
     <Accordion
-      open={open}
-      onToggle={() => setOpen((current) => !current)}
+      open={isOpen}
+      onToggle={() => toggleTeamAccordion(team.id)}
       title={
         <div className="flex items-center gap-3">
           <span
