@@ -3,6 +3,9 @@ import { useTranslation } from '@/lib/i18n'
 import { useStickerStats } from '../../hooks'
 import { useStickersStore } from '../../stores'
 import { StickerFilters } from '../StickerFilters'
+import { StickerSearch } from '../StickerSearch'
+import { StickerSortToggle } from '../StickerSortToggle'
+import { TradeModeToggle } from '../TradeModeToggle'
 
 function StatChip({
   label,
@@ -29,9 +32,14 @@ function StatChip({
   )
 }
 
-export function StickerHeader() {
+interface StickerHeaderProps {
+  tradeTeamsCount: number
+}
+
+export function StickerHeader({ tradeTeamsCount }: StickerHeaderProps) {
   const { t } = useTranslation()
   const teams = useStickersStore((state) => state.teams)
+  const tradeMode = useStickersStore((state) => state.tradeMode)
   const { global } = useStickerStats(teams)
 
   return (
@@ -64,7 +72,19 @@ export function StickerHeader() {
           />
         </div>
 
-        <StickerFilters />
+        <StickerSearch />
+
+        <TradeModeToggle />
+
+        {tradeMode ? (
+          <p className="rounded-xl bg-gruvbox-orange/15 px-3 py-2 text-xs text-gruvbox-orange">
+            {t('trade.summary', { count: tradeTeamsCount })}
+          </p>
+        ) : null}
+
+        <StickerSortToggle />
+
+        {!tradeMode ? <StickerFilters /> : null}
       </div>
     </header>
   )
