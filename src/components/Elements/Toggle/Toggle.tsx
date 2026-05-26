@@ -9,6 +9,7 @@ interface ToggleProps<T extends string> {
   options: ToggleOption<T>[]
   onChange: (value: T) => void
   ariaLabel: string
+  columns?: 2 | 3
 }
 
 export function Toggle<T extends string>({
@@ -16,12 +17,15 @@ export function Toggle<T extends string>({
   options,
   onChange,
   ariaLabel,
+  columns = 3,
 }: ToggleProps<T>) {
+  const columnClass = columns === 2 ? 'grid-cols-2' : 'grid-cols-3'
+
   return (
     <div
       role="radiogroup"
       aria-label={ariaLabel}
-      className="grid grid-cols-3 gap-1 rounded-xl bg-gruvbox-bg2 p-1"
+      className={`grid gap-1 rounded-xl bg-gruvbox-bg2 p-1 ${columnClass}`}
     >
       {options.map((option) => {
         const isActive = option.value === value
