@@ -1,0 +1,1 @@
+export { TeamStickerCarousel } from './TeamStickerCarousel'
