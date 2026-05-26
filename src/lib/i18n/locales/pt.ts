@@ -29,8 +29,33 @@ export const pt: TranslationDictionary = {
     duplicates: 'Repetidas',
     ariaLabel: 'Filtrar figurinhas',
   },
+  search: {
+    label: 'Buscar figurinha',
+    placeholder: 'Ex: BRA7, FWC1, ARG12',
+    action: 'Ir',
+    hint: 'Ideal para trocas: digite o código da figurinha e vá direto até ela.',
+    notFound: 'Figurinha não encontrada. Use o código completo (ex: BRA7).',
+    recent: 'Buscas recentes',
+  },
+  trade: {
+    inactive: 'Modo troca',
+    active: 'Modo troca ativo',
+    hintInactive: 'Mostra só faltantes e repetidas para conferir trocas.',
+    hintActive: 'Exibindo figurinhas que faltam ou estão repetidas.',
+    summary: '{{count}} seleções com figurinhas para trocar',
+    emptyAlbum: 'Nenhuma figurinha faltando ou repetida no álbum.',
+  },
+  sort: {
+    album: 'Álbum',
+    number: 'Número',
+    ariaLabel: 'Ordenar figurinhas',
+  },
   team: {
     progress: '{{owned}}/{{total}} coletadas',
+  },
+  accordion: {
+    expandAll: 'Abrir todas as seleções',
+    collapseAll: 'Fechar todas as seleções',
   },
   sticker: {
     label: 'Figurinha',
@@ -41,6 +66,23 @@ export const pt: TranslationDictionary = {
   },
   grid: {
     empty: 'Nenhuma figurinha neste filtro.',
+    emptyTrade: 'Nenhuma figurinha para trocar nesta seleção.',
+  },
+  carousel: {
+    close: 'Fechar',
+    counter: '{{current}} de {{total}}',
+    owned: 'Coletada',
+    missing: 'Faltando',
+    duplicate: '{{count}} repetidas',
+    prevTeam: 'Seleção anterior',
+    nextTeam: 'Próxima seleção',
+    prevSticker: 'Figurinha anterior',
+    nextSticker: 'Próxima figurinha',
+    goToSticker: 'Ir para figurinha {{number}}',
+    stickerNav: 'Navegação de figurinhas',
+    swipeHint: 'Deslize ↔ entre figurinhas',
+    desktopHint: '← → no teclado · botões laterais · roda do mouse · clique nos pontos',
+    gestureHint: '↓ fechar · ↑ editar · ↔ no topo troca seleção · nas bordas muda seleção',
   },
   quantity: {
     decrease: 'Diminuir quantidade',

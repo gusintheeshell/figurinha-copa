@@ -29,8 +29,33 @@ export const es: TranslationDictionary = {
     duplicates: 'Repetidos',
     ariaLabel: 'Filtrar cromos',
   },
+  search: {
+    label: 'Buscar cromo',
+    placeholder: 'Ej: BRA7, FWC1, ARG12',
+    action: 'Ir',
+    hint: 'Ideal para intercambios: escribe el código y ve directo al cromo.',
+    notFound: 'Cromo no encontrado. Usa el código completo (ej: BRA7).',
+    recent: 'Búsquedas recientes',
+  },
+  trade: {
+    inactive: 'Modo intercambio',
+    active: 'Modo intercambio activo',
+    hintInactive: 'Muestra solo faltantes y repetidos para revisar intercambios.',
+    hintActive: 'Mostrando cromos que faltan o están repetidos.',
+    summary: '{{count}} selecciones con cromos para intercambiar',
+    emptyAlbum: 'No hay cromos faltantes ni repetidos en tu álbum.',
+  },
+  sort: {
+    album: 'Álbum',
+    number: 'Número',
+    ariaLabel: 'Ordenar cromos',
+  },
   team: {
     progress: '{{owned}}/{{total}} conseguidos',
+  },
+  accordion: {
+    expandAll: 'Abrir todas las selecciones',
+    collapseAll: 'Cerrar todas las selecciones',
   },
   sticker: {
     label: 'Cromo',
@@ -41,6 +66,23 @@ export const es: TranslationDictionary = {
   },
   grid: {
     empty: 'Ningún cromo coincide con este filtro.',
+    emptyTrade: 'Ningún cromo para intercambiar en esta selección.',
+  },
+  carousel: {
+    close: 'Cerrar',
+    counter: '{{current}} de {{total}}',
+    owned: 'Conseguido',
+    missing: 'Falta',
+    duplicate: '{{count}} repetidos',
+    prevTeam: 'Selección anterior',
+    nextTeam: 'Siguiente selección',
+    prevSticker: 'Cromo anterior',
+    nextSticker: 'Siguiente cromo',
+    goToSticker: 'Ir al cromo {{number}}',
+    stickerNav: 'Navegación de cromos',
+    swipeHint: 'Desliza ↔ entre cromos',
+    desktopHint: '← → teclado · botones laterales · rueda del mouse · clic en los puntos',
+    gestureHint: '↓ cerrar · ↑ editar · ↔ arriba cambia selección · en bordes cambia selección',
   },
   quantity: {
     decrease: 'Disminuir cantidad',
