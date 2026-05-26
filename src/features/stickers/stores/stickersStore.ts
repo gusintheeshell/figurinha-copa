@@ -1,11 +1,19 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { buildAlbum } from '../data/mockAlbum'
-import type { StickerFilter, Team } from '../types'
+import { normalizeStickerQuery } from '../utils/findSticker'
+import type { StickerFilter, StickerSort, Team } from '../types'
 
 interface StickersState {
   teams: Team[]
   filter: StickerFilter
+  sort: StickerSort
+  tradeMode: boolean
+  searchHistory: string[]
+  focusedSticker: { teamId: string; stickerId: string } | null
+  expandedTeams: Record<string, boolean>
+  carouselTeamId: string | null
+  carouselStickerId: string | null
 }
 
 interface StickersActions {
@@ -14,7 +22,30 @@ interface StickersActions {
   increment: (teamId: string, stickerId: string) => void
   decrement: (teamId: string, stickerId: string) => void
   setFilter: (filter: StickerFilter) => void
+  setSort: (sort: StickerSort) => void
+  setTradeMode: (enabled: boolean) => void
+  addSearchHistory: (code: string) => void
+  focusSticker: (teamId: string, stickerId: string) => void
+  clearFocusedSticker: () => void
+  toggleTeamAccordion: (teamId: string) => void
+  expandAllTeams: (teamIds: string[]) => void
+  collapseAllTeams: (teamIds: string[]) => void
+  openTeamCarousel: (teamId: string, stickerId?: string) => void
+  closeTeamCarousel: () => void
   resetAlbum: () => void
+}
+
+type PersistedStickersState = Pick<StickersState, 'teams' | 'filter' | 'sort'>
+
+export function isTeamExpanded(
+  expandedTeams: Record<string, boolean>,
+  teamId: string,
+) {
+  return expandedTeams[teamId] ?? true
+}
+
+function setTeamsExpansion(teamIds: string[], expanded: boolean) {
+  return Object.fromEntries(teamIds.map((teamId) => [teamId, expanded]))
 }
 
 function updateStickerQuantity(
@@ -67,6 +98,13 @@ export const useStickersStore = create<StickersState & StickersActions>()(
     (set) => ({
       teams: buildAlbum(),
       filter: 'all',
+      sort: 'album',
+      tradeMode: false,
+      searchHistory: [],
+      focusedSticker: null,
+      expandedTeams: {},
+      carouselTeamId: null,
+      carouselStickerId: null,
 
       toggleOwned: (teamId, stickerId) =>
         set((state) => ({
@@ -107,37 +145,124 @@ export const useStickersStore = create<StickersState & StickersActions>()(
 
       setFilter: (filter) => set({ filter }),
 
+      setSort: (sort) => set({ sort }),
+
+      setTradeMode: (enabled) => set({ tradeMode: enabled }),
+
+      addSearchHistory: (code) =>
+        set((state) => {
+          const normalized = normalizeStickerQuery(code)
+
+          if (!normalized) {
+            return state
+          }
+
+          return {
+            searchHistory: [
+              normalized,
+              ...state.searchHistory.filter((item) => item !== normalized),
+            ].slice(0, 8),
+          }
+        }),
+
+      focusSticker: (teamId, stickerId) =>
+        set((state) => ({
+          focusedSticker: { teamId, stickerId },
+          expandedTeams: { ...state.expandedTeams, [teamId]: true },
+        })),
+
+      clearFocusedSticker: () => set({ focusedSticker: null }),
+
+      toggleTeamAccordion: (teamId) =>
+        set((state) => ({
+          expandedTeams: {
+            ...state.expandedTeams,
+            [teamId]: !isTeamExpanded(state.expandedTeams, teamId),
+          },
+        })),
+
+      expandAllTeams: (teamIds) =>
+        set((state) => ({
+          expandedTeams: {
+            ...state.expandedTeams,
+            ...setTeamsExpansion(teamIds, true),
+          },
+          carouselTeamId: null,
+          carouselStickerId: null,
+        })),
+
+      collapseAllTeams: (teamIds) =>
+        set((state) => ({
+          expandedTeams: {
+            ...state.expandedTeams,
+            ...setTeamsExpansion(teamIds, false),
+          },
+          carouselTeamId: null,
+          carouselStickerId: null,
+        })),
+
+      openTeamCarousel: (teamId, stickerId) =>
+        set({
+          carouselTeamId: teamId,
+          carouselStickerId: stickerId ?? null,
+        }),
+
+      closeTeamCarousel: () =>
+        set({
+          carouselTeamId: null,
+          carouselStickerId: null,
+          focusedSticker: null,
+        }),
+
       resetAlbum: () =>
         set({
           teams: buildAlbum(),
           filter: 'all',
+          sort: 'album',
+          tradeMode: false,
+          searchHistory: [],
+          focusedSticker: null,
+          expandedTeams: {},
+          carouselTeamId: null,
+          carouselStickerId: null,
         }),
     }),
     {
       name: 'figurinhas-copa-v1',
-      version: 3,
+      version: 4,
+      partialize: (state): PersistedStickersState => ({
+        teams: state.teams,
+        filter: state.filter,
+        sort: state.sort,
+      }),
+      merge: (persistedState, currentState) => ({
+        ...currentState,
+        ...(persistedState as PersistedStickersState),
+        tradeMode: currentState.tradeMode,
+        searchHistory: currentState.searchHistory,
+        focusedSticker: currentState.focusedSticker,
+        expandedTeams: currentState.expandedTeams,
+        carouselTeamId: currentState.carouselTeamId,
+        carouselStickerId: currentState.carouselStickerId,
+      }),
       migrate: (persistedState, version) => {
-        const state = persistedState as StickersState | undefined
+        const state = persistedState as Partial<StickersState> | undefined
 
         if (!state) {
-          return persistedState as StickersState & StickersActions
+          return persistedState
         }
 
-        if (version < 2) {
-          return {
-            ...state,
-            teams: mergeAlbumWithSavedQuantities(state.teams),
-          }
-        }
+        const teams =
+          version < 3
+            ? mergeAlbumWithSavedQuantities(state.teams)
+            : (state.teams ?? buildAlbum())
 
-        if (version < 3) {
-          return {
-            ...state,
-            teams: mergeAlbumWithSavedQuantities(state.teams),
-          }
+        return {
+          ...state,
+          teams,
+          filter: state.filter ?? 'all',
+          sort: state.sort ?? 'album',
         }
-
-        return state as StickersState & StickersActions
       },
     },
   ),
