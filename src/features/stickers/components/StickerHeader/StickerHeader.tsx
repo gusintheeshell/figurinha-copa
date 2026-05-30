@@ -2,6 +2,7 @@ import { LanguageSwitcher, ProgressBar } from '@/components/Elements'
 import { useTranslation } from '@/lib/i18n'
 import { useStickerStats } from '../../hooks'
 import { useStickersStore } from '../../stores'
+import type { StickerFilter, StickerSort } from '../../types'
 import { StickerFilters } from '../StickerFilters'
 import { StickerSearch } from '../StickerSearch'
 import { StickerSortToggle } from '../StickerSortToggle'
@@ -32,6 +33,14 @@ function StatChip({
   )
 }
 
+function filterLabel(filter: StickerFilter, t: (key: string) => string) {
+  return t(`filters.${filter}`)
+}
+
+function sortLabel(sort: StickerSort, t: (key: string) => string) {
+  return t(`sort.${sort}`)
+}
+
 interface StickerHeaderProps {
   tradeTeamsCount: number
 }
@@ -39,8 +48,19 @@ interface StickerHeaderProps {
 export function StickerHeader({ tradeTeamsCount }: StickerHeaderProps) {
   const { t } = useTranslation()
   const teams = useStickersStore((state) => state.teams)
+  const filter = useStickersStore((state) => state.filter)
+  const sort = useStickersStore((state) => state.sort)
   const tradeMode = useStickersStore((state) => state.tradeMode)
+  const headerToolsExpanded = useStickersStore((state) => state.headerToolsExpanded)
+  const toggleHeaderTools = useStickersStore((state) => state.toggleHeaderTools)
   const { global } = useStickerStats(teams)
+
+  const toolsSummary = tradeMode
+    ? t('header.summaryTrade')
+    : t('header.summary', {
+        filter: filterLabel(filter, t),
+        sort: sortLabel(sort, t),
+      })
 
   return (
     <header className="sticky top-0 z-20 border-b border-gruvbox-bg2 bg-gruvbox-bg/95 px-3 pb-3 pt-[max(0.75rem,env(safe-area-inset-top))] backdrop-blur">
@@ -72,19 +92,57 @@ export function StickerHeader({ tradeTeamsCount }: StickerHeaderProps) {
           />
         </div>
 
-        <StickerSearch />
+        <button
+          type="button"
+          onClick={toggleHeaderTools}
+          aria-expanded={headerToolsExpanded}
+          aria-controls="header-tools-panel"
+          className="flex min-h-11 w-full items-center justify-between gap-3 rounded-xl border border-gruvbox-bg2 bg-gruvbox-bg1 px-3 py-2 text-left transition active:scale-[0.99]"
+        >
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-semibold text-gruvbox-fg">
+              {headerToolsExpanded ? t('header.hideTools') : t('header.showTools')}
+            </p>
+            {!headerToolsExpanded ? (
+              <p className="truncate text-xs text-gruvbox-fgMuted">{toolsSummary}</p>
+            ) : null}
+          </div>
+          <span
+            aria-hidden
+            className={`shrink-0 text-gruvbox-yellow transition-transform duration-300 ease-out ${
+              headerToolsExpanded ? 'rotate-180' : 'rotate-0'
+            }`}
+          >
+            ▾
+          </span>
+        </button>
 
-        <TradeModeToggle />
+        <div
+          id="header-tools-panel"
+          className={`grid transition-[grid-template-rows,opacity] duration-300 ease-out ${
+            headerToolsExpanded
+              ? 'grid-rows-[1fr] opacity-100'
+              : 'grid-rows-[0fr] opacity-0'
+          }`}
+        >
+          <div className="overflow-hidden">
+            <div className="space-y-3 pt-0">
+              <StickerSearch />
 
-        {tradeMode ? (
-          <p className="rounded-xl bg-gruvbox-orange/15 px-3 py-2 text-xs text-gruvbox-orange">
-            {t('trade.summary', { count: tradeTeamsCount })}
-          </p>
-        ) : null}
+              <TradeModeToggle />
 
-        <StickerSortToggle />
+              {tradeMode ? (
+                <p className="rounded-xl bg-gruvbox-orange/15 px-3 py-2 text-xs text-gruvbox-orange">
+                  {t('trade.summary', { count: tradeTeamsCount })}
+                </p>
+              ) : null}
 
-        {!tradeMode ? <StickerFilters /> : null}
+              <StickerSortToggle />
+
+              {!tradeMode ? <StickerFilters /> : null}
+            </div>
+          </div>
+        </div>
       </div>
     </header>
   )
