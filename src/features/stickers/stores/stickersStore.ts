@@ -14,6 +14,7 @@ interface StickersState {
   expandedTeams: Record<string, boolean>
   carouselTeamId: string | null
   carouselStickerId: string | null
+  headerToolsExpanded: boolean
 }
 
 interface StickersActions {
@@ -32,10 +33,14 @@ interface StickersActions {
   collapseAllTeams: (teamIds: string[]) => void
   openTeamCarousel: (teamId: string, stickerId?: string) => void
   closeTeamCarousel: () => void
+  toggleHeaderTools: () => void
   resetAlbum: () => void
 }
 
-type PersistedStickersState = Pick<StickersState, 'teams' | 'filter' | 'sort'>
+type PersistedStickersState = Pick<
+  StickersState,
+  'teams' | 'filter' | 'sort' | 'headerToolsExpanded'
+>
 
 export function isTeamExpanded(
   expandedTeams: Record<string, boolean>,
@@ -105,6 +110,7 @@ export const useStickersStore = create<StickersState & StickersActions>()(
       expandedTeams: {},
       carouselTeamId: null,
       carouselStickerId: null,
+      headerToolsExpanded: true,
 
       toggleOwned: (teamId, stickerId) =>
         set((state) => ({
@@ -214,6 +220,11 @@ export const useStickersStore = create<StickersState & StickersActions>()(
           focusedSticker: null,
         }),
 
+      toggleHeaderTools: () =>
+        set((state) => ({
+          headerToolsExpanded: !state.headerToolsExpanded,
+        })),
+
       resetAlbum: () =>
         set({
           teams: buildAlbum(),
@@ -229,11 +240,12 @@ export const useStickersStore = create<StickersState & StickersActions>()(
     }),
     {
       name: 'figurinhas-copa-v1',
-      version: 4,
+      version: 5,
       partialize: (state): PersistedStickersState => ({
         teams: state.teams,
         filter: state.filter,
         sort: state.sort,
+        headerToolsExpanded: state.headerToolsExpanded,
       }),
       merge: (persistedState, currentState) => ({
         ...currentState,
@@ -262,6 +274,7 @@ export const useStickersStore = create<StickersState & StickersActions>()(
           teams,
           filter: state.filter ?? 'all',
           sort: state.sort ?? 'album',
+          headerToolsExpanded: state.headerToolsExpanded ?? true,
         }
       },
     },
