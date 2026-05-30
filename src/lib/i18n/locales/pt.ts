@@ -29,6 +29,12 @@ export const pt: TranslationDictionary = {
     duplicates: 'Repetidas',
     ariaLabel: 'Filtrar figurinhas',
   },
+  header: {
+    showTools: 'Mostrar busca e filtros',
+    hideTools: 'Ocultar busca e filtros',
+    summary: '{{filter}} · {{sort}}',
+    summaryTrade: 'Modo troca ativo',
+  },
   search: {
     label: 'Buscar figurinha',
     placeholder: 'Ex: BRA7, FWC1, ARG12',

@@ -29,6 +29,12 @@ export const en: TranslationDictionary = {
     duplicates: 'Duplicates',
     ariaLabel: 'Filter stickers',
   },
+  header: {
+    showTools: 'Show search and filters',
+    hideTools: 'Hide search and filters',
+    summary: '{{filter}} · {{sort}}',
+    summaryTrade: 'Trade mode active',
+  },
   search: {
     label: 'Search sticker',
     placeholder: 'Ex: BRA7, FWC1, ARG12',

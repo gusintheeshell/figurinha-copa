@@ -29,6 +29,12 @@ export const es: TranslationDictionary = {
     duplicates: 'Repetidos',
     ariaLabel: 'Filtrar cromos',
   },
+  header: {
+    showTools: 'Mostrar búsqueda y filtros',
+    hideTools: 'Ocultar búsqueda y filtros',
+    summary: '{{filter}} · {{sort}}',
+    summaryTrade: 'Modo intercambio activo',
+  },
   search: {
     label: 'Buscar cromo',
     placeholder: 'Ej: BRA7, FWC1, ARG12',
